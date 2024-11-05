@@ -156,7 +156,7 @@ void DFS(short int grid[3][3], short int row, short int col) {
 
 // 04.11.2024 BURASI YAPILACAK.
 void DFSL(short int grid[3][3], short int row, short int col, short int limit) {
-    type = DFSTYPE;
+    type = DFSLTYPE;
     std::stack<PuzzleHistory> puzzleHistoryStack;
     std::unordered_set<std::string> visitedSet;
 
