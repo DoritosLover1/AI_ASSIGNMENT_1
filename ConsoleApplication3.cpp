@@ -6,6 +6,12 @@
 #include <stack>
 #include "Timer.h"
 
+//For selection about which search is that -just about select correct print-
+enum SearchType {
+    BFSTYPE = 0,
+    DFSTYPE = 1
+};
+
 /*Kinda storage for avoiding reputation*/
 struct PuzzleHistory {
     short int history[3][3];
@@ -21,6 +27,7 @@ struct PuzzleHistory {
     }
 };
 
+enum SearchType type;
 std::vector<int> fringeSize;
 short int tarr[3][3] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8} };
 
@@ -34,9 +41,11 @@ std::string moveString = "URDL";
 bool isValidRowAndCol(int row, int col);
 bool isCorrectSolution(short int grid[3][3]);
 void printGrid(short int grid[3][3]);
+void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fringeSize);
 
 /*IT IS FOUND OUT AND OPTIMAL*/
 void BFS(short int grid[3][3], short int row, short int col) {
+    type = BFSTYPE;
     std::queue<PuzzleHistory> puzzleHistoryQueue;
     std::unordered_set<std::string> visitedSet;
 
@@ -54,12 +63,7 @@ void BFS(short int grid[3][3], short int row, short int col) {
 
         fringeSize.push_back(puzzleHistoryQueue.size());
         if (isCorrectSolution(current.history)) {
-            std::cout << "BFS solution Found:\n";
-            printGrid(current.history);
-            //std::cout << "Path to solution: " << current.path << std::endl;
-            int maxNumofFringe = *std::max_element(fringeSize.begin(), fringeSize.end());
-            std::cout << "Max size of Fringe: " << maxNumofFringe << "\n";
-            fringeSize.clear();
+            endOfAlgorithm(BFSTYPE, &current, &fringeSize);
             return;
         }
 
@@ -94,6 +98,7 @@ void BFS(short int grid[3][3], short int row, short int col) {
 
 /*IT IS FOUND OUT BUT TOO LONG*/
 void DFS(short int grid[3][3], short int row, short int col) {
+    type = DFSTYPE;
     std::stack<PuzzleHistory> puzzleHistoryStack;
     std::unordered_set<std::string> visitedSet;
 
@@ -111,12 +116,7 @@ void DFS(short int grid[3][3], short int row, short int col) {
 
         fringeSize.push_back(puzzleHistoryStack.size());
         if (isCorrectSolution(current.history)) {
-            std::cout << "DFS Solution Found:\n";
-            printGrid(current.history);
-            //std::cout << "Path to solution: " << current.path << std::endl;
-            int maxNumofFringe = *std::max_element(fringeSize.begin(), fringeSize.end());
-            std::cout << "Max size of Fringe: " << maxNumofFringe << "\n";
-            fringeSize.clear();
+            endOfAlgorithm(DFSTYPE, &current, &fringeSize);
             return;
         }
 
@@ -151,7 +151,7 @@ void DFS(short int grid[3][3], short int row, short int col) {
 }
 
 // 04.11.2024 BURASI YAPILACAK.
-void DFSL(short int grid[3][3], short int row, short int col) {
+void DFSL(short int grid[3][3], short int row, short int col, short int limit) {
 
 }
 
@@ -198,4 +198,23 @@ void printGrid(short int grid[3][3]) {
         std::cout << std::endl;
     }
     std::cout << "------------------" << std::endl;
+}
+
+void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fringeSize) {
+    switch (type)
+    {
+    case 0:
+        std::cout << "BFS Solution Found:\n";
+        break;
+    case 1:
+        std::cout << "DFS Solution Found:\n";
+        break;
+    default:
+        break;
+    }
+    printGrid(current->history);
+    //std::cout << "Path to solution: " << current.path << std::endl;
+    int maxNumofFringe = *std::max_element(fringeSize->begin(), fringeSize->end());
+    std::cout << "Max size of Fringe: " << maxNumofFringe << "\n";
+    fringeSize->clear();
 }
