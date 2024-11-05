@@ -10,7 +10,8 @@
 //For selection about which search is that -just about select correct print-
 enum SearchType {
     BFSTYPE = 0,
-    DFSTYPE = 1
+    DFSTYPE = 1,
+    DFSLTYPE = 2
 };
 
 /*Kinda storage for avoiding reputation*/
@@ -277,6 +278,9 @@ void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fr
         break;
     case 1:
         std::cout << "DFS Solution Found:\n";
+        break;
+    case 2:
+        std::cout << "DFSL Solution Found:\n";
         break;
     default:
         break;
