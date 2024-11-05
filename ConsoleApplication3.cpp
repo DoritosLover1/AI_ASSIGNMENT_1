@@ -172,7 +172,7 @@ void DFSL(short int grid[3][3], short int row, short int col, short int limit) {
             break;
         }
         else {
-            for (int i = 0; i < limit; i++) {
+            for (int i = 0; i < limit; --limit) {
                 PuzzleHistory current = puzzleHistoryStack.top();
                 puzzleHistoryStack.pop();
                 fringeSize.push_back(puzzleHistoryStack.size());
@@ -210,7 +210,7 @@ void DFSL(short int grid[3][3], short int row, short int col, short int limit) {
         }
     }
 
-    std::cout << "No Solution Found via DFS.\n";
+    std::cout << "No Solution Found via DFSL.\n";
 }
 
 int main() {
