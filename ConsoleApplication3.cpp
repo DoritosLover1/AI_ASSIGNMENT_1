@@ -7,7 +7,7 @@
 #include "Timer.h"
 #include "Output.h"
 
-//For selection about which search is that -just about select correct print-
+/*For selection about which search is that - just about select correct print -*/
 enum SearchType {
     BFSTYPE = 0,
     DFSTYPE = 1,
