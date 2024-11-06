@@ -17,6 +17,6 @@ public:
 		start = std::chrono::high_resolution_clock::now();
 		std::this_thread::sleep_for(1s);
 	}
-	void endTimer();
+	std::string endTimer();
 };
 

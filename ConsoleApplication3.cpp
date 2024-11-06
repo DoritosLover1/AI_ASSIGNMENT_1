@@ -43,45 +43,17 @@ short int dCol[] = { 0, 1, 0, -1 };
 
 /*For making moving of ai*/
 std::string moveString = "URDL";
+std::string duration;
 
 /*Some implentations about corrections and printing*/
 bool isValidRowAndCol(int row, int col);
 bool isCorrectSolution(short int grid[3][3]);
-void printGrid(short int grid[3][3]);
-void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fringeSize);
-/*
-bool DLS(PuzzleHistory& current, long int depth,long int depth_limit, std::unordered_set<std::string>& visitedSet) {
-    PuzzleHistory nextCurrent;
-    if (isCorrectSolution(current.history)) {
-        std::cout << "IT IS CORRECT" << std::endl;
-        return true;
-    }
-    if (depth >= depth_limit) return false;
+void printGrid(short int grid[3][3], int& state);
 
-    visitedSet.insert(current.former());
-
-    for (int i = 0; i < 4; i++) {
-        int newRow = current.RowLoc + dRow[i];
-        int newCol = current.ColLoc + dCol[i];
-
-        if (isValidRowAndCol(newRow, newCol)) {
-            nextCurrent = current;
-
-            std::swap(nextCurrent.history[current.RowLoc][current.ColLoc],
-                nextCurrent.history[newRow][newCol]);
-
-            if (visitedSet.find(nextCurrent.former()) == visitedSet.end()) {
-                visitedSet.insert(nextCurrent.former());
-                if (DLS(nextCurrent, depth + 1, depth_limit, visitedSet))
-                    return true;
-            }
-        }
-    }
-    return false;
-}
-*/
+static void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration);
 
 void BFS(short int grid[3][3], short int row, short int col) {
+    Timer* time = new Timer();
     type = BFSTYPE;
     std::queue<PuzzleHistory> puzzleHistoryQueue;
     std::unordered_set<std::string> visitedSet;
@@ -100,7 +72,9 @@ void BFS(short int grid[3][3], short int row, short int col) {
 
         fringeSize.push_back(puzzleHistoryQueue.size());
         if (isCorrectSolution(current.history)) {
-            endOfAlgorithm(type, &current, &fringeSize);
+            duration = time->endTimer();
+            endOfAlgorithm(type, &current, &fringeSize, iterationCount, duration);
+            printGrid(current.history, iterationCount);
             return;
         }
 
@@ -125,12 +99,14 @@ void BFS(short int grid[3][3], short int row, short int col) {
         }
         if (++iterationCount % printInterval == 0) {
             std::cout << "Stage: " << iterationCount << "\n";
-            printGrid(current.history);
+            printGrid(current.history, iterationCount);
         }
     }
     std::cout << "No Solution Found via BFS. \n";
+    delete time;
 }
 void DFS(short int grid[3][3], short int row, short int col) {
+    Timer* time = new Timer();
     type = DFSTYPE;
     std::stack<PuzzleHistory> puzzleHistoryStack;
     std::unordered_set<std::string> visitedSet;
@@ -149,7 +125,8 @@ void DFS(short int grid[3][3], short int row, short int col) {
 
         fringeSize.push_back(puzzleHistoryStack.size());
         if (isCorrectSolution(current.history)) {
-            endOfAlgorithm(type, &current, &fringeSize);
+            duration = time->endTimer();
+            endOfAlgorithm(type, &current, &fringeSize, iterationCount, duration);
             return;
         }
 
@@ -176,13 +153,14 @@ void DFS(short int grid[3][3], short int row, short int col) {
 
         if (++iterationCount % printInterval == 0) {
             std::cout << "Stage: " << iterationCount << "\n";
-            printGrid(current.history);
+            printGrid(current.history, iterationCount);
         }
     }
-
     std::cout << "No Solution Found via DFS.\n";
+    delete time;
 }
 void DFSL(short int grid[3][3], short int row, short int col, long int limit) {
+    Timer* time = new Timer();
     type = DFSLTYPE;
     std::stack<PuzzleHistory> puzzleHistoryStack;
     std::unordered_set<std::string> visitedSet;
@@ -205,11 +183,11 @@ void DFSL(short int grid[3][3], short int row, short int col, long int limit) {
                 puzzleHistoryStack.pop();
                 fringeSize.push_back(puzzleHistoryStack.size());
                 if (isCorrectSolution(current.history)) {
-                    endOfAlgorithm(type, &current, &fringeSize);
+                    duration = time->endTimer();
+                    endOfAlgorithm(type, &current, &fringeSize, iterationCount, duration);
                     return;
                 }
 
-                // Explore all possible moves in each direction
                 for (int i = 0; i < 4; i++) {
                     int newRow = current.RowLoc + dRow[i];
                     int newCol = current.ColLoc + dCol[i];
@@ -232,15 +210,16 @@ void DFSL(short int grid[3][3], short int row, short int col, long int limit) {
 
                 if (++iterationCount % printInterval == 0) {
                     std::cout << "Stage: " << iterationCount << "\n";
-                    printGrid(current.history);
+                    printGrid(current.history, iterationCount);
                 }
             }
         }
     }
-
+    delete time;
     std::cout << "No Solution Found via DFSL.\n";
 }
 void IDDFS(short int grid[3][3], short int row, short int col, long int depth_limit) {
+    Timer* time = new Timer();
     type = IDDFSTYPE;
     std::queue<PuzzleHistory> puzzleHistoryQueue;
     std::unordered_set<std::string> visitedSet;
@@ -260,7 +239,8 @@ void IDDFS(short int grid[3][3], short int row, short int col, long int depth_li
 
         fringeSize.push_back(puzzleHistoryQueue.size());
         if (isCorrectSolution(current.history)) {
-            endOfAlgorithm(type, &current, &fringeSize);
+            duration = time->endTimer();
+            endOfAlgorithm(type, &current, &fringeSize, iterationCount, duration);
             return;
         }
 
@@ -286,10 +266,11 @@ void IDDFS(short int grid[3][3], short int row, short int col, long int depth_li
         ++depth;
         if (++iterationCount % printInterval == 0) {
             std::cout << "Stage: " << iterationCount << "\n";
-            printGrid(current.history);
+            printGrid(current.history, iterationCount);
         }
     }
-    std::cout << "No Solution Found via BFS. \n";
+    delete time;
+    std::cout << "No Solution Found via IDDFS. \n";
     /*
     std::vector<int> fringeSize;
 
@@ -317,28 +298,21 @@ int main() {
                 zeroRowLoc = i;
                 zeroColLoc = j;
             }
-    /*
-    Timer* time = new Timer();
+    
     BFS(arr, zeroRowLoc, zeroColLoc);
-    time->endTimer();
-    */
-
     /*
     Timer* time1 = new Timer();
     DFS(arr, zeroRowLoc, zeroColLoc);
     time1->endTimer();
-    */
-
-    /*
+    
     Timer* time2 = new Timer();
     DFSL(arr, zeroRowLoc, zeroColLoc, 20);
     time2->endTimer();
-    */
-
+    
     Timer* time3 = new Timer();
     IDDFS(arr, zeroRowLoc, zeroColLoc, 200);
     time3->endTimer();
-    
+    */
     return 0;
 }
 
@@ -352,8 +326,9 @@ bool isCorrectSolution(short int grid[3][3]) {
                 return false;
     return true;
 }
-void printGrid(short int grid[3][3]) {
+void printGrid(short int grid[3][3], int& state) {
     std::string str;
+    str += "State: " + std::to_string(state) + "\n";
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             str += std::to_string(grid[i][j]) + " ";
@@ -366,27 +341,39 @@ void printGrid(short int grid[3][3]) {
     std::cout << "------------------" << std::endl;
     file.writeTheFile(str);
 }
-void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fringeSize) {
-    switch (type)
-    {
-    case 0:
-        std::cout << "BFS Solution Found:\n";
+static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration) {
+    std::string str;
+
+    switch (type) {
+    case BFSTYPE:
+        str += "BFS Solution Found:\n";
+        std::cout << str << "\n";
         break;
-    case 1:
-        std::cout << "DFS Solution Found:\n";
+    case DFSTYPE:
+        str += "DFS Solution Found:\n";
+        std::cout << str << "\n";
         break;
-    case 2:
-        std::cout << "DFSL Solution Found:\n";
+    case DFSLTYPE:
+        str += "DFSL Solution Found:\n";
+        std::cout << str << "\n";
         break;
-    case 3:
-        std::cout << "IDDFS Solution Found:\n";
+    case IDDFSTYPE:
+        str += "IDDFS Solution Found:\n";
+        std::cout << str << "\n";
         break;
     default:
+        str += "Unknown Solution Found:\n";
+        std::cout << str << "\n";
         break;
     }
-    printGrid(current->history);
-    //std::cout << "Path to solution: " << current.path << std::endl;
-    int maxNumofFringe = *std::max_element(fringeSize->begin(), fringeSize->end());
-    std::cout << "Max size of Fringe: " << maxNumofFringe << "\n";
+
+    int maxNumOfFringe = *std::max_element(fringeSize->begin(), fringeSize->end());
+    str += "Max size of Fringe: " + std::to_string(maxNumOfFringe) + "\n";
+    str += "Taken time: " + duration;
+
+    std::cout << "Max size of Fringe: " << maxNumOfFringe << "\n";
+    std::cout << "------------------" << std::endl;
+
+    file.writeTheFile(str);
     fringeSize->clear();
 }
