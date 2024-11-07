@@ -421,7 +421,7 @@ static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<
         break;
     default:
         str += "Unknown Solution Found:\n";
-        std::cout << str << "\n";
+        std::cout << str << "\n" ;
         break;
     }
 
