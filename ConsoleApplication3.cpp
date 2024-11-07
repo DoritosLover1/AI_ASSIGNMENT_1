@@ -9,11 +9,9 @@
 #include "Timer.h"
 #include "Output.h"
 
-// Structure for storing puzzle configuration
 struct Puzzle {
     short int arr[3][3];
 };
-
 struct PuzzleHistory {
     Puzzle history;
     short int RowLoc, ColLoc = 0;
@@ -35,7 +33,7 @@ enum SearchType type;
 std::vector<int> fringeSize;
 
 Puzzle tarr = {{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}}}; // Target state for comparison
-long int limit = 2000;
+long int limit = 1200000;
 
 short int dRow[] = { -1, 0, 1, 0 };
 short int dCol[] = { 0, 1, 0, -1 };
@@ -49,7 +47,6 @@ void printGrid(const Puzzle& puzzle, int& state);
 bool isSolvableArr(const Puzzle& puzzle);
 static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration);
 
-// BFS function using Puzzle struct
 void BFS(const Puzzle& puzzle, short int row, short int col) {
     Timer* time = new Timer();
     type = BFSTYPE;
@@ -316,6 +313,7 @@ int main() {
             std::cout << "Puzzle is not solvable, skipping.\n";
         }
     }
+
     for (const Puzzle& puzzle : listOfArray) {
         short int zeroRowLoc = 0, zeroColLoc = 0;
         for (int i = 0; i < 3; i++) {
@@ -328,7 +326,7 @@ int main() {
         }
         if (isSolvableArr(puzzle)) {
             std::cout << "Puzzle is solvable, running DFSL:\n";
-            DFSL(puzzle, zeroRowLoc, zeroColLoc, 20);
+            DFSL(puzzle, zeroRowLoc, zeroColLoc, 1000000);
         }
         else {
             std::cout << "Puzzle is not solvable, skipping.\n";
@@ -346,7 +344,7 @@ int main() {
         }
         if (isSolvableArr(puzzle)) {
             std::cout << "Puzzle is solvable, running IDDFS:\n";
-            IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000);
+            IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
         }
         else {
             std::cout << "Puzzle is not solvable, skipping.\n";
