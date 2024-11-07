@@ -1,9 +1,11 @@
 ﻿#include <iostream>  
-#include <queue>  
+#include <queue>
 #include <cstring>
 #include <string>
 #include <unordered_set>
 #include <stack>
+#include <chrono>
+#include <thread>
 #include "Timer.h"
 #include "Output.h"
 
@@ -29,11 +31,14 @@ struct PuzzleHistory {
         return result;
     }
 };
+struct Puzzle {
+    short int arr[3][3];
+};
 
 Output file("output.txt");
-
 enum SearchType type;
 std::vector<int> fringeSize;
+
 short int tarr[3][3] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8} };
 long int limit = 2000;
 
@@ -49,6 +54,7 @@ std::string duration;
 bool isValidRowAndCol(int row, int col);
 bool isCorrectSolution(short int grid[3][3]);
 void printGrid(short int grid[3][3], int& state);
+bool isSolvableArr(short int grid[3][3]);
 
 static void endOfAlgorithm(SearchType type,PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration);
 
@@ -91,9 +97,10 @@ void BFS(short int grid[3][3], short int row, short int col) {
                 nextCurrent.ColLoc = newCol;
                 nextCurrent.path += moveString[i];
 
-                if (visitedSet.find(nextCurrent.former()) == visitedSet.end()) {
+                std::string formedString = nextCurrent.former();
+                if (visitedSet.find(formedString) == visitedSet.end()) {
                     puzzleHistoryQueue.push(nextCurrent);
-                    visitedSet.insert(nextCurrent.former());
+                    visitedSet.insert(formedString);
                 }
             }
         }
@@ -289,30 +296,73 @@ void IDDFS(short int grid[3][3], short int row, short int col, long int depth_li
 }
 
 int main() {
-    short int arr[3][3] = { {1, 2, 4}, {0, 5, 7}, {8, 3, 6} };
+    Puzzle first{ {{2, 1, 0}, {3, 5, 8}, {6, 4, 7} } }; Puzzle second{ { { 1, 2, 0 }, { 3, 6, 5 }, { 4, 8, 7 } } };
+    Puzzle third{ { {1, 0, 2}, {5, 6, 3}, {4, 8, 7} } }; Puzzle forth{ { {6, 8, 2}, {3, 4, 7}, {0, 1, 5} } }; 
+    Puzzle fifth{ { {7, 0, 8}, {3, 2, 5}, {4, 1, 6} } }; Puzzle six{ { {3, 2, 4}, {1, 6, 7}, {0, 8, 5} } };
+    Puzzle seven{ { {1, 6, 4}, {3, 7, 2}, {5, 8, 0} } }; Puzzle eight{ { {4, 6, 8}, {0, 7, 2}, {5, 3, 1} } }; 
+    Puzzle nine{ { {0, 6, 7}, {4, 8, 5}, {1, 3, 2} } }; Puzzle ten { { {4, 1, 8}, {0, 7, 5}, {2, 3, 6} } };
+
+    std::vector<Puzzle> listOfArray;
+    listOfArray.push_back(first); listOfArray.push_back(second); listOfArray.push_back(third);
+    listOfArray.push_back(forth); listOfArray.push_back(fifth); listOfArray.push_back(six);
+    listOfArray.push_back(seven); listOfArray.push_back(eight); listOfArray.push_back(nine);
+    listOfArray.push_back(ten);
+
+    short int arr[3][3] = {};
     short int zeroRowLoc, zeroColLoc = 0;
 
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-            if (arr[i][j] == 0) {
-                zeroRowLoc = i;
-                zeroColLoc = j;
-            }
-    
-    BFS(arr, zeroRowLoc, zeroColLoc);
-    /*
-    Timer* time1 = new Timer();
-    DFS(arr, zeroRowLoc, zeroColLoc);
-    time1->endTimer();
-    
-    Timer* time2 = new Timer();
-    DFSL(arr, zeroRowLoc, zeroColLoc, 20);
-    time2->endTimer();
-    
-    Timer* time3 = new Timer();
-    IDDFS(arr, zeroRowLoc, zeroColLoc, 200);
-    time3->endTimer();
-    */
+    for (const Puzzle &puzzle : listOfArray) {
+        std::memcpy(arr, puzzle.arr, sizeof(arr));
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (arr[i][j] == 0) {
+                    zeroRowLoc = i;
+                    zeroColLoc = j;
+                }
+        if (isSolvableArr(arr)) {
+            std::cout << "Puzzle is solvable, running BFS:\n";
+            BFS(arr, zeroRowLoc, zeroColLoc);
+        }
+        else {
+            std::cout << "Puzzle is not solvable, skipping.\n";
+        }
+    }
+    for (const Puzzle& puzzle : listOfArray) {
+        std::memcpy(arr, puzzle.arr, sizeof(arr));
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (arr[i][j] == 0) {
+                    zeroRowLoc = i;
+                    zeroColLoc = j;
+                }
+        if (isSolvableArr(arr)) {
+            DFS(arr, zeroRowLoc, zeroColLoc);
+        }
+    }
+    for (const Puzzle& puzzle : listOfArray) {
+        std::memcpy(arr, puzzle.arr, sizeof(arr));
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (arr[i][j] == 0) {
+                    zeroRowLoc = i;
+                    zeroColLoc = j;
+                }
+        if (isSolvableArr(arr)) {
+            DFSL(arr, zeroRowLoc, zeroColLoc, 20);
+        }
+    }
+    for (const Puzzle& puzzle : listOfArray) {
+        std::memcpy(arr, puzzle.arr, sizeof(arr));
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (arr[i][j] == 0) {
+                    zeroRowLoc = i;
+                    zeroColLoc = j;
+                }
+        if (isSolvableArr(arr)) {
+            IDDFS(arr, zeroRowLoc, zeroColLoc, 200);
+        }
+    }
     return 0;
 }
 
@@ -340,6 +390,24 @@ void printGrid(short int grid[3][3], int& state) {
     str += "------------------\n";
     std::cout << "------------------" << std::endl;
     file.writeTheFile(str);
+}
+bool isSolvableArr(short int grid[3][3])
+{
+    std::vector<short int> set;
+    int solvablility = 0;
+
+    for (short int i = 0; i < 3; i++) {
+        for (short int j = 0; j < 3; j++) {
+            set.push_back(grid[i][j]);
+        }
+    }
+    for (short int i = 0; i < set.size(); i++) {
+        for (short int j = i+1; j < set.size(); j++) {
+            if (set[i] > set[j]) ++solvablility;
+        }
+    }
+
+    return (solvablility % 2 == 0);
 }
 static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration) {
     std::string str;
