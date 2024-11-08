@@ -278,7 +278,7 @@ int main() {
         {{{4, 1, 8}, {0, 7, 5}, {2, 3, 6}}}
     };
 
-    for (const Puzzle &puzzle : listOfArray) {
+    for (const Puzzle& puzzle : listOfArray) {
         short int zeroRowLoc = 0, zeroColLoc = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -313,7 +313,6 @@ int main() {
             std::cout << "Puzzle is not solvable, skipping.\n";
         }
     }
-
     for (const Puzzle& puzzle : listOfArray) {
         short int zeroRowLoc = 0, zeroColLoc = 0;
         for (int i = 0; i < 3; i++) {
@@ -350,6 +349,7 @@ int main() {
             std::cout << "Puzzle is not solvable, skipping.\n";
         }
     }
+
     return 0;
 }
 
