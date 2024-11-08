@@ -47,6 +47,278 @@ void printGrid(const Puzzle& puzzle, int& state);
 bool isSolvableArr(const Puzzle& puzzle);
 static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration);
 
+// Search algorithms prototypes
+void BFS(const Puzzle& puzzle, short int row, short int col);
+void DFS(const Puzzle& puzzle, short int row, short int col);
+void DFSL(const Puzzle& puzzle, short int row, short int col, long int limit);
+void IDDFS(const Puzzle& puzzle, short int row, short int col, long int depth_limit);
+
+int main() {
+
+    short int typeNum;
+    std::cout << "Which search algorithm do you want to use(0 -BFS-,1 -DFS-,2 -DFSL-,3 -IDDFS-, 4 -Run all of them-)";
+    std::cin >> typeNum;
+    std::cout << "\n";
+
+    std::vector<Puzzle> listOfArray = {
+        {{{2, 1, 0}, {3, 5, 8}, {6, 4, 7}}},
+        {{{1, 2, 0}, {3, 6, 5}, {4, 8, 7}}},
+        {{{1, 0, 2}, {5, 6, 3}, {4, 8, 7}}},
+        {{{6, 8, 2}, {3, 4, 7}, {0, 1, 5}}},
+        {{{7, 0, 8}, {3, 2, 5}, {4, 1, 6}}},
+        {{{3, 2, 4}, {1, 6, 7}, {0, 8, 5}}},
+        {{{1, 6, 4}, {3, 7, 2}, {5, 8, 0}}},
+        {{{4, 6, 8}, {0, 7, 2}, {5, 3, 1}}},
+        {{{0, 6, 7}, {4, 8, 5}, {1, 3, 2}}},
+        {{{4, 1, 8}, {0, 7, 5}, {2, 3, 6}}}
+    };
+
+    if (std::cin.fail()) {
+        return 0;
+    }
+
+    switch (typeNum)
+    {
+    case 0:
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running BFS:\n";
+                BFS(puzzle, zeroRowLoc, zeroColLoc);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        break;
+    case 1:
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running DFS:\n";
+                DFS(puzzle, zeroRowLoc, zeroColLoc);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        break;
+    case 2:
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running DFSL:\n";
+                DFSL(puzzle, zeroRowLoc, zeroColLoc, 1000000);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        break;
+    case 3:
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running IDDFS:\n";
+                IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        break;
+    case 4:
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running BFS:\n";
+                BFS(puzzle, zeroRowLoc, zeroColLoc);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running DFS:\n";
+                DFS(puzzle, zeroRowLoc, zeroColLoc);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running DFSL:\n";
+                DFSL(puzzle, zeroRowLoc, zeroColLoc, 1000000);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        for (const Puzzle& puzzle : listOfArray) {
+            short int zeroRowLoc = 0, zeroColLoc = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (puzzle.arr[i][j] == 0) {
+                        zeroRowLoc = i;
+                        zeroColLoc = j;
+                    }
+                }
+            }
+            if (isSolvableArr(puzzle)) {
+                std::cout << "Puzzle is solvable, running IDDFS:\n";
+                IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
+            }
+            else {
+                std::cout << "Puzzle is not solvable, skipping.\n";
+            }
+        }
+        break;
+    default:
+        std::cerr << "THERE IS NOT KINDA KEY FOR WHAT YOU ENTERED" << std::endl;
+        break;
+    }
+    return 0;
+}
+
+bool isValidRowAndCol(int row, int col) {
+    return (row >= 0 && row < 3 && col >= 0 && col < 3);
+}
+bool isCorrectSolution(const Puzzle& puzzle) {
+    for (short int i = 0; i < 3; i++)
+        for (short int j = 0; j < 3; j++)
+            if (puzzle.arr[i][j] != tarr.arr[i][j])
+                return false;
+    return true;
+}
+void printGrid(const Puzzle& puzzle, int& state) {
+    std::string str;
+    str += "State: " + std::to_string(state) + "\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            str += std::to_string(puzzle.arr[i][j]) + " ";
+            std::cout << puzzle.arr[i][j] << " ";
+        }
+        str += "\n";
+        std::cout << std::endl;
+    }
+    str += "------------------\n";
+    std::cout << "------------------" << std::endl;
+    file.writeTheFile(str);
+}
+bool isSolvableArr(const Puzzle& puzzle) {
+    std::vector<short int> set;
+    int solvablility = 0;
+
+    for (short int i = 0; i < 3; i++) {
+        for (short int j = 0; j < 3; j++) {
+            set.push_back(puzzle.arr[i][j]);
+        }
+    }
+    for (short int i = 0; i < set.size(); i++) {
+        for (short int j = i + 1; j < set.size(); j++) {
+            if (set[i] > set[j] && set[j] != 0) ++solvablility;
+        }
+    }
+
+    return (solvablility % 2 == 0);
+}
+static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration) {
+    std::string str;
+
+    switch (type) {
+    case BFSTYPE:
+        str += "BFS Solution Found:\n";
+        std::cout << str << "\n";
+        break;
+    case DFSTYPE:
+        str += "DFS Solution Found:\n";
+        std::cout << str << "\n";
+        break;
+    case DFSLTYPE:
+        str += "DFSL Solution Found:\n";
+        std::cout << str << "\n";
+        break;
+    case IDDFSTYPE:
+        str += "IDDFS Solution Found:\n";
+        std::cout << str << "\n";
+        break;
+    default:
+        str += "Unknown Solution Found:\n";
+        std::cout << str << "\n" ;
+        break;
+    }
+
+    int maxNumOfFringe = *std::max_element(fringeSize->begin(), fringeSize->end());
+    str += "Max size of Fringe: " + std::to_string(maxNumOfFringe) + "\n";
+    str += "Taken time: " + duration;
+
+    std::cout << "Max size of Fringe: " << maxNumOfFringe << "\n";
+    std::cout << "------------------" << std::endl;
+
+    file.writeTheFile(str);
+    fringeSize->clear();
+}
+
 void BFS(const Puzzle& puzzle, short int row, short int col) {
     Timer* time = new Timer();
     type = BFSTYPE;
@@ -80,7 +352,7 @@ void BFS(const Puzzle& puzzle, short int row, short int col) {
             if (isValidRowAndCol(newRow, newCol)) {
                 PuzzleHistory nextCurrent = current;
                 std::swap(nextCurrent.history.arr[current.RowLoc][current.ColLoc],
-                          nextCurrent.history.arr[newRow][newCol]);
+                    nextCurrent.history.arr[newRow][newCol]);
 
                 nextCurrent.RowLoc = newRow;
                 nextCurrent.ColLoc = newCol;
@@ -262,176 +534,4 @@ void IDDFS(const Puzzle& puzzle, short int row, short int col, long int depth_li
     }
     std::cout << "No Solution Found via IDDFS.\n";
     delete time;
-}
-
-int main() {
-    std::vector<Puzzle> listOfArray = {
-        {{{2, 1, 0}, {3, 5, 8}, {6, 4, 7}}},
-        {{{1, 2, 0}, {3, 6, 5}, {4, 8, 7}}},
-        {{{1, 0, 2}, {5, 6, 3}, {4, 8, 7}}},
-        {{{6, 8, 2}, {3, 4, 7}, {0, 1, 5}}},
-        {{{7, 0, 8}, {3, 2, 5}, {4, 1, 6}}},
-        {{{3, 2, 4}, {1, 6, 7}, {0, 8, 5}}},
-        {{{1, 6, 4}, {3, 7, 2}, {5, 8, 0}}},
-        {{{4, 6, 8}, {0, 7, 2}, {5, 3, 1}}},
-        {{{0, 6, 7}, {4, 8, 5}, {1, 3, 2}}},
-        {{{4, 1, 8}, {0, 7, 5}, {2, 3, 6}}}
-    };
-
-    for (const Puzzle& puzzle : listOfArray) {
-        short int zeroRowLoc = 0, zeroColLoc = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (puzzle.arr[i][j] == 0) {
-                    zeroRowLoc = i;
-                    zeroColLoc = j;
-                }
-            }
-        }
-        if (isSolvableArr(puzzle)) {
-            std::cout << "Puzzle is solvable, running BFS:\n";
-            BFS(puzzle, zeroRowLoc, zeroColLoc);
-        } else {
-            std::cout << "Puzzle is not solvable, skipping.\n";
-        }
-    }
-    for (const Puzzle& puzzle : listOfArray) {
-        short int zeroRowLoc = 0, zeroColLoc = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (puzzle.arr[i][j] == 0) {
-                    zeroRowLoc = i;
-                    zeroColLoc = j;
-                }
-            }
-        }
-        if (isSolvableArr(puzzle)) {
-            std::cout << "Puzzle is solvable, running DFS:\n";
-            DFS(puzzle, zeroRowLoc, zeroColLoc);
-        }
-        else {
-            std::cout << "Puzzle is not solvable, skipping.\n";
-        }
-    }
-    for (const Puzzle& puzzle : listOfArray) {
-        short int zeroRowLoc = 0, zeroColLoc = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (puzzle.arr[i][j] == 0) {
-                    zeroRowLoc = i;
-                    zeroColLoc = j;
-                }
-            }
-        }
-        if (isSolvableArr(puzzle)) {
-            std::cout << "Puzzle is solvable, running DFSL:\n";
-            DFSL(puzzle, zeroRowLoc, zeroColLoc, 1000000);
-        }
-        else {
-            std::cout << "Puzzle is not solvable, skipping.\n";
-        }
-    }
-    for (const Puzzle& puzzle : listOfArray) {
-        short int zeroRowLoc = 0, zeroColLoc = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (puzzle.arr[i][j] == 0) {
-                    zeroRowLoc = i;
-                    zeroColLoc = j;
-                }
-            }
-        }
-        if (isSolvableArr(puzzle)) {
-            std::cout << "Puzzle is solvable, running IDDFS:\n";
-            IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
-        }
-        else {
-            std::cout << "Puzzle is not solvable, skipping.\n";
-        }
-    }
-
-    return 0;
-}
-
-bool isValidRowAndCol(int row, int col) {
-    return (row >= 0 && row < 3 && col >= 0 && col < 3);
-}
-
-bool isCorrectSolution(const Puzzle& puzzle) {
-    for (short int i = 0; i < 3; i++)
-        for (short int j = 0; j < 3; j++)
-            if (puzzle.arr[i][j] != tarr.arr[i][j])
-                return false;
-    return true;
-}
-
-void printGrid(const Puzzle& puzzle, int& state) {
-    std::string str;
-    str += "State: " + std::to_string(state) + "\n";
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            str += std::to_string(puzzle.arr[i][j]) + " ";
-            std::cout << puzzle.arr[i][j] << " ";
-        }
-        str += "\n";
-        std::cout << std::endl;
-    }
-    str += "------------------\n";
-    std::cout << "------------------" << std::endl;
-    file.writeTheFile(str);
-}
-
-bool isSolvableArr(const Puzzle& puzzle) {
-    std::vector<short int> set;
-    int solvablility = 0;
-
-    for (short int i = 0; i < 3; i++) {
-        for (short int j = 0; j < 3; j++) {
-            set.push_back(puzzle.arr[i][j]);
-        }
-    }
-    for (short int i = 0; i < set.size(); i++) {
-        for (short int j = i + 1; j < set.size(); j++) {
-            if (set[i] > set[j] && set[j] != 0) ++solvablility;
-        }
-    }
-
-    return (solvablility % 2 == 0);
-}
-
-static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<int>* fringeSize, int& state, std::string& duration) {
-    std::string str;
-
-    switch (type) {
-    case BFSTYPE:
-        str += "BFS Solution Found:\n";
-        std::cout << str << "\n";
-        break;
-    case DFSTYPE:
-        str += "DFS Solution Found:\n";
-        std::cout << str << "\n";
-        break;
-    case DFSLTYPE:
-        str += "DFSL Solution Found:\n";
-        std::cout << str << "\n";
-        break;
-    case IDDFSTYPE:
-        str += "IDDFS Solution Found:\n";
-        std::cout << str << "\n";
-        break;
-    default:
-        str += "Unknown Solution Found:\n";
-        std::cout << str << "\n" ;
-        break;
-    }
-
-    int maxNumOfFringe = *std::max_element(fringeSize->begin(), fringeSize->end());
-    str += "Max size of Fringe: " + std::to_string(maxNumOfFringe) + "\n";
-    str += "Taken time: " + duration;
-
-    std::cout << "Max size of Fringe: " << maxNumOfFringe << "\n";
-    std::cout << "------------------" << std::endl;
-
-    file.writeTheFile(str);
-    fringeSize->clear();
 }
