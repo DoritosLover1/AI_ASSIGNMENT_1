@@ -51,7 +51,7 @@ static void endOfAlgorithm(SearchType type, PuzzleHistory* current, std::vector<
 void BFS(const Puzzle& puzzle, short int row, short int col);
 void DFS(const Puzzle& puzzle, short int row, short int col);
 void DFSL(const Puzzle& puzzle, short int row, short int col, long int limit);
-void IDDFS(const Puzzle& puzzle, short int row, short int col, long int depth_limit);
+void IDS(const Puzzle& puzzle, short int row, short int col, long int depth_limit);
 
 int main() {
 
@@ -152,7 +152,7 @@ int main() {
             }
             if (isSolvableArr(puzzle)) {
                 std::cout << "Puzzle is solvable, running IDDFS:\n";
-                IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
+                IDS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
             }
             else {
                 std::cout << "Puzzle is not solvable, skipping.\n";
@@ -226,7 +226,7 @@ int main() {
             }
             if (isSolvableArr(puzzle)) {
                 std::cout << "Puzzle is solvable, running IDDFS:\n";
-                IDDFS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
+                IDS(puzzle, zeroRowLoc, zeroColLoc, 1000000);
             }
             else {
                 std::cout << "Puzzle is not solvable, skipping.\n";
@@ -439,10 +439,11 @@ void DFSL(const Puzzle& puzzle, short int row, short int col, long int limit) {
     int iterationCount = 0;
     const int printInterval = 6000;
 
-    while (!puzzleHistoryStack.empty() && limit > 0) {
+    while (!puzzleHistoryStack.empty()) {
         PuzzleHistory current = puzzleHistoryStack.top();
         puzzleHistoryStack.pop();
-        --limit;
+        if(limit > 0)
+            --limit;
 
         fringeSize.push_back(puzzleHistoryStack.size());
         if (isCorrectSolution(current.history)) {
@@ -466,7 +467,9 @@ void DFSL(const Puzzle& puzzle, short int row, short int col, long int limit) {
                 nextCurrent.path += moveString[i];
 
                 if (visitedSet.find(nextCurrent.former()) == visitedSet.end()) {
-                    puzzleHistoryStack.push(nextCurrent);
+                    if (limit > 0) {
+                        puzzleHistoryStack.push(nextCurrent);
+                    }
                     visitedSet.insert(nextCurrent.former());
                 }
             }
@@ -480,7 +483,7 @@ void DFSL(const Puzzle& puzzle, short int row, short int col, long int limit) {
     std::cout << "No Solution Found via DFSL.\n";
     delete time;
 }
-void IDDFS(const Puzzle& puzzle, short int row, short int col, long int depth_limit) {
+void IDS(const Puzzle& puzzle, short int row, short int col, long int depth_limit) {
     Timer* time = new Timer();
     type = IDDFSTYPE;
     std::queue<PuzzleHistory> puzzleHistoryQueue;
@@ -494,7 +497,7 @@ void IDDFS(const Puzzle& puzzle, short int row, short int col, long int depth_li
     const int printInterval = 6000;
     int depth = 0;
 
-    while (!puzzleHistoryQueue.empty() && depth <= depth_limit) {
+    while (!puzzleHistoryQueue.empty()) {
         PuzzleHistory current = puzzleHistoryQueue.front();
         puzzleHistoryQueue.pop();
 
@@ -520,7 +523,8 @@ void IDDFS(const Puzzle& puzzle, short int row, short int col, long int depth_li
                 nextCurrent.path += moveString[i];
 
                 if (visitedSet.find(nextCurrent.former()) == visitedSet.end()) {
-                    puzzleHistoryQueue.push(nextCurrent);
+                    if(depth <= depth_limit)
+                        puzzleHistoryQueue.push(nextCurrent);
                     visitedSet.insert(nextCurrent.former());
                 }
             }
